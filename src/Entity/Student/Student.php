@@ -2,6 +2,8 @@
 
 namespace App\Entity\Student;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,9 +23,15 @@ class Student
      */
     private string $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Student\Phone", mappedBy="student", cascade={"remove", "persist"})
+     */
+    private Collection $phones;
+
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->phones = new ArrayCollection();
     }
 
     public function id(): int
@@ -39,5 +47,17 @@ class Student
     public function changeName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function addPhone(string $areaCode, string $number): void
+    {
+        $phone = new Phone($areaCode, $number);
+        $this->phones->add($phone);
+        $phone->addStudent($this);
+    }
+
+    public function phones(): Collection
+    {
+        return $this->phones;
     }
 }

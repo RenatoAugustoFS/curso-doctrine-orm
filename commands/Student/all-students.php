@@ -2,6 +2,7 @@
 
 require_once "vendor/autoload.php";
 
+use App\Entity\Course\Course;
 use App\Entity\Student\Phone;
 use App\Entity\Student\Student;
 use App\Infrastructure\Doctrine\EntityManagerFactory;
@@ -17,7 +18,12 @@ foreach ($students as $student){
         return $phone->formattedPhone();
     })->toArray();
 
+    $courses = $student->courses()->map(function (Course $course){
+        return $course->description();
+    })->toArray();
+
     echo "Id: " . $student->id() . "\n";
     echo "Name: " . $student->name() . "\n";
-    echo "Phones: " . implode(', ',$phones) . "\n\n";
+    echo "Phones: " . implode(', ',$phones) . "\n";
+    echo "Courses: " . implode(', ',$courses) . "\n\n";
 }

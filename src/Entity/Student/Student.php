@@ -25,12 +25,12 @@ class Student
     private string $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Student\Phone", mappedBy="student")
+     * @ORM\OneToMany(targetEntity="App\Entity\Student\Phone", mappedBy="student", cascade={"remove", "persist"})
      */
     private Collection $phones;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Course\Course", mappedBy="students", cascade={"remove", "persist"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Course\Course", mappedBy="students")
      */
     private Collection $courses;
 

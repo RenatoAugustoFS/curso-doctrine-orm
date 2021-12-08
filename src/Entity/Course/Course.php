@@ -47,6 +47,7 @@ class Course
 
     public function addStudent(Student $student): void
     {
+        if ($this->students->contains($student)){return;}
         $this->students->add($student);
         $student->addCourse($this);
     }

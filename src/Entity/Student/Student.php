@@ -70,7 +70,9 @@ class Student
 
     public function addCourse(Course $course): void
     {
+        if ($this->courses->contains($course)){return;}
         $this->courses->add($course);
+        $course->addStudent($this);
     }
 
     public function courses(): Collection

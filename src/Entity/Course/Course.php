@@ -52,6 +52,12 @@ class Course
         $student->addCourse($this);
     }
 
+    public function removeStudent(Student $student): void
+    {
+        if (!$this->students->contains($student)){return;}
+        $this->students->removeElement($student);
+    }
+
     public function students(): Collection
     {
         return $this->students;

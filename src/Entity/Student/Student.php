@@ -25,7 +25,7 @@ class Student
     private string $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Student\Phone", mappedBy="student", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Student\Phone", mappedBy="student", cascade={"remove", "persist"}, fetch="EAGER")
      */
     private Collection $phones;
 
@@ -73,6 +73,13 @@ class Student
         if ($this->courses->contains($course)){return;}
         $this->courses->add($course);
         $course->addStudent($this);
+    }
+
+    public function removeCourse(Course $course): void
+    {
+        if (!$this->courses->contains($course)){return;}
+        $this->courses->removeElement($course);
+        $course->removeStudent($this);
     }
 
     public function courses(): Collection

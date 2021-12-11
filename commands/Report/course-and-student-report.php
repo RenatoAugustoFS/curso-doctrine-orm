@@ -6,29 +6,48 @@ use App\Entity\Course\Course;
 use App\Entity\Student\Phone;
 use App\Entity\Student\Student;
 use App\Infrastructure\Doctrine\EntityManagerFactory;
+use Doctrine\DBAL\Logging\DebugStack;
 
 $entityManagerFactory = new EntityManagerFactory();
 $entityManager = $entityManagerFactory->getEntityManager();
 
+$debugStack = new DebugStack();
+$entityManager->getConfiguration()->setSQLLogger($debugStack);
+
+/*
 $studentRepository = $entityManager->getRepository(Student::class);
 $students = $studentRepository->findAll();
+*/
+
+$studentClass = Student::class;
+$query = $entityManager->createQuery(
+    "SELECT student, phones, courses FROM $studentClass student 
+    JOIN student.phones phones 
+    LEFT JOIN student.courses courses"
+);
+$students = $query->getResult();
+
 
 /** @var Student $student */
 foreach ($students as $student) {
+    echo "ID: " . $student->id() . "\n";
+    echo "Name: " . $student->name() . "\n";
+
     $phoneList = $student->phones()->map(function (Phone $phone){
         return $phone->formattedPhone();
     })->toArray();
-
-    echo "Name: " . $student->name() . "\n";
     echo "Phone: ". implode(', ', $phoneList) . "\n";
 
     $courseList = $student->courses();
 
-    /** @var Course $course */
-    foreach ($courseList as $course){
-        echo "Course Id: " . $course->id() . "\n";
-        echo "Description: " . $course->description() . "\n";
-    }
-    echo "\n\n";
+    $courses = $student->courses()->map(function (Course $course){
+        return $course->description();
+    })->toArray();
+
+    echo "Courses: " . implode(', ',$courses) . "\n\n";
 }
 
+foreach ($debugStack->queries as $queryInfo) {
+    echo $queryInfo['sql'] . "\n";
+    echo "\n";
+}

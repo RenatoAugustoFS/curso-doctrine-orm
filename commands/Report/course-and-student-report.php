@@ -14,19 +14,8 @@ $entityManager = $entityManagerFactory->getEntityManager();
 $debugStack = new DebugStack();
 $entityManager->getConfiguration()->setSQLLogger($debugStack);
 
-/*
 $studentRepository = $entityManager->getRepository(Student::class);
-$students = $studentRepository->findAll();
-*/
-
-$studentClass = Student::class;
-$query = $entityManager->createQuery(
-    "SELECT student, phones, courses FROM $studentClass student 
-    JOIN student.phones phones 
-    LEFT JOIN student.courses courses"
-);
-$students = $query->getResult();
-
+$students = $studentRepository->studentsWithCourse();
 
 /** @var Student $student */
 foreach ($students as $student) {
